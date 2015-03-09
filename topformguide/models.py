@@ -67,7 +67,9 @@ class Variant(models.Model):
         ('CONVERTIBLE', 'Convertible'),
         ('SPORTS', 'Sports'),
         ('SUV', 'SUV'),
-        ('PEOPLE_MOVER', 'People Mover')
+        ('PEOPLE_MOVER', 'People Mover'),
+        ('CAB_CHASSIS', 'Cab Chassis'),
+        ('LIGHT_TRUCK', 'Light Truck')
     )
 
     TRANSMISSION_TYPES = (
@@ -125,6 +127,7 @@ class Variant(models.Model):
     grossWeight = models.FloatField('The gross mass of the vehicle', null=True)
     tareWeight = models.FloatField('The tared mass of the vehicle', null=True)
     payload = models.FloatField('Maximum weight the car can carr (in kg)', null=True)
+    kerbWeightCalculated = models.BooleanField("Was kerb data scraped or calcualted?", default=False)
 
     wheelbase = models.IntegerField('Width between the wheels in mm')
     length = models.IntegerField('The length of the car in mm')
@@ -162,15 +165,14 @@ class FuelEconomy(models.Model):
     amount = models.FloatField("How efficient in either MPG or L/100km")
     unit = models.CharField("The econ rating unit measurement - l/100km or MPG", choices= ECONOMY_TYPES, max_length=10)
     condition = models.CharField("What type of driving this rating applies to", choices=CONDITION, max_length=10)
-
+    calculated = models.BooleanField("Was this emission data scraped or calcualted?", default=False)
 
 class EmissionData(models.Model):
     """Tracks an emission level under a given driving condition"""
     variant = models.ForeignKey(Variant, related_name='emissionDataSet')
     amount = models.FloatField("How much CO2 per kilometre the car emits")
-    condition = models.CharField("What type of driving this rating applies to", choices=FuelEconomy.CONDITION,
-                                 max_length=10)
-
+    condition = models.CharField("What type of driving this rating applies to", choices=FuelEconomy.CONDITION, max_length=10)
+    calculated = models.BooleanField("Was this emission data scraped or calcualted?", default=False)
 
 class RawData(models.Model):
     """"The data scraped from a source """

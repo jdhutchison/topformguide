@@ -41,6 +41,7 @@ class CarData:
         self.wheelbase = None # Mandatory, integer
         self.length = None # Mandatory, integer
         self.width = None # Optional, integer
+        self.height = None
         self.lengthUnits = None # Mandatory, string - what unit the sie measurements of the car are in. One of 'MM', 'INCHES'
         self.interiorVolume = None # Optional, integer
         self.bootVolume = None # Optional, integer
@@ -50,12 +51,6 @@ class CarData:
         self.airbags = None # Optional,
         self.sourceUrl = None # Mandatory, url - The URL the data was scraped/obtained from
         self.timestamp = None # Mandatory, datetime - When the data was scraped or obtained
-
-class PowerRating:
-    def __init__(self):
-        self.power = None # Mandatory, integer
-        self.unit = None # Mandatory, string - The unit for the pwoer amount above. One of 'KW', 'HP', 'Nm'
-        self.rpm = None # Optional, integer - amount, or lower amount if a range, of RPM needed to get above power
 
 class FuelEconomy:
     def __init__(self):

@@ -22,6 +22,8 @@ class CarSalesScraper:
         self.httpClient = urllib3.PoolManager()
         self.postCarFunction = None
         self.pauseTime = 15
+        self.requestSession = requests.Session()
+        self.requestSession.mount(CarSalesScraper.BASE_URL, requests.adapters.HTTPAdapter(max_retries=5))
 
     def getCarData(self):
         response = self.httpClient.request('GET', urlparse.urljoin(self.BASE_URL, self.MAKE_DATA_URI))
@@ -63,15 +65,15 @@ class CarSalesScraper:
                     sys.stderr.write('-------------------------\n', )
 
             # Handle any pages
-            nextLink = dom.select('td.next >a.page')
+            nextLink = dom.select('td.next > a.page')
             if nextLink is not None and len(nextLink) != 0:
-                url = nextLink[0].get('href')
+                url = urlparse.urljoin(self.BASE_URL, nextLink[0].get('href'))
             else:
                 url = None
 
 
     def parseCarData(self, make, model, url):
-        response = requests.get(urlparse.urljoin(self.BASE_URL, url), allow_redirects=False)
+        response = self.requestSession.get(urlparse.urljoin(self.BASE_URL, url), allow_redirects=False)
         time.sleep(self.pauseTime)
         if response.status_code is not 200:
             print('No data for %s %s' % (make, model))
@@ -130,9 +132,9 @@ class CarSalesScraper:
         car.engineVolume = dictUtils.getTokenFromValueAsInt(points, 'Engine Size (cc)', 0)
         car.engineVolumeUnit = 'cc'
         car.enginePower, car.enginePowerRpm, car.enginePowerRpmHigh = \
-            self.parseEnginePower(dictUtils.getValue(points, ['Power', 'Alternative Engine Power']))
+            self.parseEnginePower(dictUtils.getValue(points, ['Power', 'Combined Power', 'Alternative Engine Power']))
         car.enginePowerUnit = 'kW'
-        car.torque, car.torqueRpm, car.torqueRpmHigh = self.parseEnginePower(points['Torque'])
+        car.torque, car.torqueRpm, car.torqueRpmHigh = self.parseEnginePower(dictUtils.getValue(points, ['Torque', 'Alternative Engine Torque']))
         car.fuelTank = dictUtils.getTokenFromValueAsInt(points, 'Fuel Capacity', 0)
         car.fuelTankUnit = 'L'
         if 'Fuel Type' in points:
@@ -140,7 +142,6 @@ class CarSalesScraper:
         car.fuelRange = dictUtils.getTokenFromValueAsInt\
             (points, ['Fuel Average Distance', 'Fuel Minimum Distance', 'Electric Engine Km Range'], 0)
         car.fuelRangeUnit = 'L'
-
 
         car.fuelConsumption = self.parseFuelEfficiency(points)
         car.emissions = self.parseEmissions(points)
@@ -169,7 +170,7 @@ class CarSalesScraper:
             car.safetyRatingSource = 'ANCAP'
 
     def parseTransmissionType(self, type):
-        if type == 'Automatic':
+        if type.find('Automatic') >= 0:
             return 'AUTO'
         elif type.find('Sport') >= 0:
             return 'SPORT'
@@ -177,11 +178,19 @@ class CarSalesScraper:
             return 'MANUAL'
 
     def parseBodyType(self, bodyType):
-        bodyType = bodyType.upper()
+        bodyType = bodyType.upper().replace(' ', '_')
         if bodyType.find('HATCH') >= 0:
             return 'HATCHBACK'
         elif bodyType.find('WAGON') >= 0:
             return 'WAGON'
+        elif bodyType.find('SUV'):
+            return 'SUV'
+        elif bodyType.find('CONVERTIBLE'):
+            return 'CONVERTIBLE'
+        elif bodyType.find('COUPE'):
+            return 'COUPE'
+        elif bodyType.find('CREWVAN'):
+            return 'VAN'
         else:
             return bodyType
 
@@ -192,6 +201,9 @@ class CarSalesScraper:
             return points['Engine Type'].upper()
 
     def parseEnginePower(self, powerData):
+        if powerData is None:
+            return (None, None, None)
+
         power = None
         rpmLower = None
         rpmUpper = None
@@ -238,6 +250,8 @@ class CarSalesScraper:
     def parseVariantName(self, points):
         if points['Series'].startswith('('):
             return points['Badge']
+        elif points['Badge'].startswith('('):
+            return points['Series']
         else:
             return '%s %s' % (points['Badge'], points['Series'])
 
@@ -247,9 +261,9 @@ class CarSalesScraper:
             return None
         elif drive.find('4X4') > -1:
             return '4X4'
-        elif drive.startswith('Front'):
+        elif drive.find('Front') >= 0:
             return 'FRONT'
-        elif drive.startswith('Rear'):
+        elif drive.find('Rear') >= 0:
             return 'REAR'
         elif drive.startswith('All'):
             return 'ALL'
