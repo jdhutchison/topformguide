@@ -1,52 +1,11 @@
 import json
+from datetime import datetime
 
-import conversion
-import constants
-import calculations
-import datetime.datetime as datetime
-from .. import models as models
+from topformguide.util import conversion
+from topformguide.util import constants
+from topformguide.util import calculations
+from topformguide import models
 
-# Fuel mass constants
-from util.calculations import calculateKerbWeight
-
-
-def mapPowerRatingFromJson(jsonText):
-    """
-    Maps JSON data to a PowerRating object.
-    :param jsonText: [string] JSON data to populate from
-    :return: a fully populated PowerRating object
-    """
-    data = json.loads(jsonText)
-    return mapPowerRating(data)
-
-
-def mapPowerRating(data, powerRating):
-    """
-    Maps a dict to a PowerRating object.
-    :param data: [dict] data to populate object from
-    :return: a fully populated PowerRating object
-    """
-
-    powerRating.power = data['power']
-
-    if 'unit' in data:
-        powerRating.unit = data['unit']
-
-    if 'rpmLower' in data:
-        powerRating.minRpm = data['rpmLower']
-
-    if 'rpmUpper' in data:
-        powerRating.minRpm = data['rpmUpper']
-
-    return powerRating
-
-
-def mapTorque(data):
-    return mapPowerRating(data, models.PowerRating())
-
-
-def mapEngineRating(data):
-    return mapPowerRating(data, models.EnginePower())
 
 def mapFuelEconomyFromJson(jsonText):
     data = json.loads(jsonText)
@@ -56,13 +15,13 @@ def mapFuelEconomy(data):
     fuelEcon = models.FuelEconomy()
     fuelEcon.amount = data['amount']
     fuelEcon.unit = data['unit']
-    fuelEcon.condition = data['type']
+    fuelEcon.type = data['type']
     return fuelEcon
 
 
 def convertMpgFuelEcon(econRatingInMpg):
     newEconRating = models.FuelEconomy()
-    newEconRating.condition = econRatingInMpg['type']
+    newEconRating.type = econRatingInMpg['type']
     newEconRating.amount = conversion.mpgToLitresPer100km(econRatingInMpg['amount'])
     newEconRating.unit = constants.LITRES_PER_100_KM
     newEconRating.calculated = True
@@ -70,58 +29,59 @@ def convertMpgFuelEcon(econRatingInMpg):
 
 def convertEmissionData(data):
     emssionRating = models.EmissionData()
-    emssionRating.condition = data['type']
+    emssionRating.type = data['type']
     emssionRating.amount = data['amount']
     emssionRating.calculated = False
     emssionRating.unit = data['unit']
     return emssionRating
 
 def mapAndConvertFuelEconomies(econs, variant):
-    variant.fuelEconomySet = []
     for e in econs:
         newFuelEcon = mapFuelEconomy(e)
         newFuelEcon.variant = variant
-        variant.fuelEconomySet.append(newFuelEcon)
+        variant.fuelEconomySet.add(newFuelEcon)
         if newFuelEcon.unit == constants.MILES_PER_GALLON:
             metricised = convertMpgFuelEcon(newFuelEcon)
-            variant.fuelEconomySet.append(metricised)
+            variant.fuelEconomySet.add(metricised)
             metricised.variant = variant
+
 
     # If there is no combined rating then create one if possible
     if calculations.findRating(variant.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM) is None:
         averaged = models.FuelEconomy()
         averaged.amount = calculations.calculateCombinedFuelRating(variant)
-        averaged.condition = constants.COMBINED
+        averaged.type = constants.COMBINED
         averaged.unit = constants.LITRES_PER_100_KM
         averaged.vairant = variant
         averaged.calculated = True
-        variant.fuelEconomySet.append(averaged)
+        if averaged.amount is not None:
+            variant.fuelEconomySet.add(averaged)
+
 
 
 
 def mapEmissions(emissions, variant):
-    variant.emissionDataSet = []
+    emissionDataSet = []
     for e in emissions:
         newEmissionData = convertEmissionData(e)
-        variant.emissionDataSet.append(newEmissionData)
+        variant.emissionDataSet.add(newEmissionData)
         newEmissionData.variant = variant
 
     # For each fuel econ type
-    for econ in variant.fuelEcononySet:
+    for econ in variant.fuelEconomySet.all():
         # If it is l/100kn
         if econ.unit == constants.LITRES_PER_100_KM:
             # find matching emission
-            matchingEmission = calculations.findRating\
-                (variant.fuelEcononySet, constants.COMBINED, constants.LITRES_PER_100_KM)
+            matchingEmission = calculations.findRating \
+                (variant.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM)
             if matchingEmission is None:
                 newEmissionData = convertFuelEconomyToEmissions(econ, variant.fuelType)
-                variant.emissionDataSet.append(newEmissionData)
+                variant.emissionDataSet.add(newEmissionData)
                 newEmissionData.variant = variant
-
 
 def convertFuelEconomyToEmissions(fuelEconomy, fuelType):
     emissions = models.EmissionData()
-    emissions.condition = fuelEconomy.condition
+    emissions.type = fuelEconomy.type
     emissions.unit = constants.CO2_PER_KILOMETRE
     emissions.calculated = True
     emissions.amount = calculations.calculateEmissionForFuelEconomy(fuelEconomy, fuelType)
@@ -131,7 +91,7 @@ def getStdEmission(car):
     if car.fuelType == 'ELECTRIC':
         return 0.0
 
-    bestEmissionData = calculations.findRating(car.emissionDataSet, constants.COMBINED, constants.LITRES_PER_100_KM)
+    bestEmissionData = calculations.findRating(car.emissionDataSet, constants.COMBINED)
     if bestEmissionData is None:
         return None
     else:
@@ -159,12 +119,12 @@ def mapVariantFromJson(jsonText):
     car.fuelTankCapacity = conversion.convertVolumeToLitres(data['fuelTank'], data['fuelTankUnit'])
     if data['enginePower'] is not None:
         car.enginePower = conversion.convertPowerToKilloWatts(data['enginePower'], data['enginePowerUnit'])
-        car.enginePowerRpms = data['enginePowerRpms']
-        car.enginePowerRpmsHigh = data['enginePowerRpmsHigh']
+        car.enginePowerRpms = data['enginePowerRpm']
+        car.enginePowerRpmsHigh = data['enginePowerRpmHigh']
     # Torque
     car.torque = data['torque']
-    car.torqueRpms = data['torqueRpms']
-    car.torqueRpmsHigh = data['torqueHighRpms']
+    car.torqueRpms = data['torqueRpm']
+    car.torqueRpmsHigh = data['torqueRpmHigh']
 
 
     # Transmission
@@ -172,7 +132,7 @@ def mapVariantFromJson(jsonText):
     car.speeds = data['transmissionSpeeds']
 
     # Speed - maximum
-    if data['topSpeedUnit'] == constants.MPH:
+    if data['topSpeedUnit'] == constants.MILES_PER_HOUR:
         car.topSpeed = conversion.milesToKilometres(data['topSpeed'])
     else:
         car.topSpeed = data['topSpeed']
@@ -185,16 +145,16 @@ def mapVariantFromJson(jsonText):
 
     # Dimensions - mass
     if data['kerbWeight'] is not None:
-        car.kerbWeight = conversion.convertToKilograms(data['kerbWeight'], data['weightUnit'])
+        car.kerbWeight = conversion.convertMassToKilograms(data['kerbWeight'], data['weightUnit'])
     if data['grossWeight'] is not None:
-        car.grossWeight = conversion.convertToKilograms(data['grossWeight'], data['weightUnit'])
+        car.grossWeight = conversion.convertMassToKilograms(data['grossWeight'], data['weightUnit'])
     if data['tareWeight'] is not None:
-        car.tareWeight = conversion.convertToKilograms(data['tareWeight'], data['weightUnit'])
+        car.tareWeight = conversion.convertMassToKilograms(data['tareWeight'], data['weightUnit'])
     if data['payload'] is not None:
-        car.tareWeight = conversion.convertToKilograms(data['payload'], data['weightUnit'])
+        car.tareWeight = conversion.convertMassToKilograms(data['payload'], data['weightUnit'])
 
     if car.kerbWeight is None:
-        car.kerbWeight = calculateKerbWeight(car)
+        car.kerbWeight = calculations.calculateKerbWeight(car)
         car.kerbWeigthCalculated = True
     else:
         car.kerbWeigthCalculated = False
@@ -215,24 +175,27 @@ def mapVariantFromJson(jsonText):
     if data['interiorVolume'] is not None:
         car.interiorVolume = conversion.convertVolumeToLitres(data['interiorVolume'], data['volumeUnit'])
 
-    # Fuel econ conversions
-    mapAndConvertFuelEconomies(data['fuelConsumption'], car)
-
-    # Emissions and eGo
-    mapEmissions(data['emissions'], car)
-    car.standardEmissions = getStdEmission(car)
-    car.eGoRating = calculations.calculateEGo(car)
-
     car.safetyRating = data['safetyRating']
     car.safetyRatingSource = data['safetyRatingSource']
     car.airbags = data['airbags']
 
-    # Add raw data
-    dataRaw = models.RawData()
-    dataRaw.vairiant = car
-    dataRaw.fecthDate = datetime.datetime.parse(data['timestamp'], constants.TIMESTAMP_FORMAT)
-    dataRaw.source = data['sourceUrl']
-    car.rawDataRecords = []
-    car.rawDataRecords.append(dataRaw)
+    return (data['make'], data['model'], data['year'], data['country'], car, data)
 
-    return (data['make'], data['model'], data['year'], data['country'], car)
+
+def mapFuelEconomyAndEmissions(variant, data):
+    # Fuel econ conversions
+    mapAndConvertFuelEconomies(data['fuelConsumption'], variant)
+
+    # Emissions and eGo
+    mapEmissions(data['emissions'], variant)
+    variant.standardEmissions = getStdEmission(variant)
+    variant.eGoRating = calculations.calculateEGo(variant)
+
+
+def mapRawDataRecord(car, data, text):
+    dataRaw = models.RawData()
+    dataRaw.variant = car
+    dataRaw.fetchDate = datetime.strptime(data['timestamp'], constants.TIMESTAMP_FORMAT)
+    dataRaw.source = data['sourceUrl']
+    dataRaw.data = text
+    car.rawDataRecords.add(dataRaw)

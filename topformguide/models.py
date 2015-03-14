@@ -31,7 +31,8 @@ class CarModel(models.Model):
     make = models.ForeignKey(Make, related_name='models')
     name = models.CharField(max_length=64)
     year = models.IntegerField('The year of the variant')
-    country = models.ForeignKey(Country, verbose_name="Country where Model is sold", null=True, related_name='models')
+    countries = models.ManyToManyField(Country, verbose_name="Country where Model is sold", null=True,
+                                       related_name='countries')
     created = models.DateTimeField("When the Make was first created")#, default=)
     lastUpdated = models.DateTimeField("When the Make was last updated")
     deleted = models.BooleanField('Is the Make logically deleted?', default=False)
@@ -47,7 +48,7 @@ class Variant(models.Model):
     FUEL_TYPES = (
         (constants.PETROL, 'Unleaded petrol'),
         (constants.DIESEL, 'Diesel'),
-        (constants.LPG, 'Natural NPG'),
+        (constants.LPG, 'LPG'),
         (constants.ELECTRIC, 'Electric')
     )
 
@@ -110,13 +111,13 @@ class Variant(models.Model):
 
     # Fuel and emission details
     fuelType = models.CharField('The type of fuel consummed', choices=FUEL_TYPES, max_length=8)
-    fuelTankCapacity = models.IntegerField('Capacity of fuel tank in litres')
+    fuelTankCapacity = models.IntegerField('Capacity of fuel tank in litres', null=True)
     fuelRange = models.IntegerField('How far the car can go in mk', null=True)
     standardEmissions = models.FloatField('Grams of CO2 emitted per kg', null=True)
-    eGoRating = models.IntegerField('E-Go rating', null=True)
+    eGoRating = models.FloatField('E-Go rating', null=True)
 
     # Performance
-    topSpeed = models.FloatField('Max speed of car in km/h')
+    topSpeed = models.FloatField('Max speed of car in km/h', null=True)
     zeroTo100Kph = models.FloatField('Time (in seconds) from 0kph to 100kph', null=True)
     zeroTo60mph = models.FloatField('Time (in seconds) from 0mph to 60mph', null=True)
 
@@ -129,9 +130,9 @@ class Variant(models.Model):
     payload = models.FloatField('Maximum weight the car can carr (in kg)', null=True)
     kerbWeightCalculated = models.BooleanField("Was kerb data scraped or calcualted?", default=False)
 
-    wheelbase = models.IntegerField('Width between the wheels in mm')
-    length = models.IntegerField('The length of the car in mm')
-    width = models.IntegerField('Maximum width of the body in mm')
+    wheelbase = models.IntegerField('Width between the wheels in mm', null=True)
+    length = models.IntegerField('The length of the car in mm', null=True)
+    width = models.IntegerField('Maximum width of the body in mm', null=True)
     interiorVolume = models.FloatField('How much interior space the car has in litres', null=True)
     bootVolume = models.FloatField('How much interior space the boot of the car has in litres', null=True)
 
@@ -161,17 +162,17 @@ class FuelEconomy(models.Model):
         (constants.COMBINED, 'Combined/average/typical usage')
     )
 
-    vairant = models.ForeignKey(Variant, related_name='fuelEcomonySet')
+    vairant = models.ForeignKey(Variant, related_name='fuelEconomySet')
     amount = models.FloatField("How efficient in either MPG or L/100km")
-    unit = models.CharField("The econ rating unit measurement - l/100km or MPG", choices= ECONOMY_TYPES, max_length=10)
-    condition = models.CharField("What type of driving this rating applies to", choices=CONDITION, max_length=10)
+    unit = models.CharField("The econ rating unit measurement - l/100km or MPG", choices=ECONOMY_TYPES, max_length=32)
+    type = models.CharField("What type of driving this rating applies to", choices=CONDITION, max_length=16)
     calculated = models.BooleanField("Was this emission data scraped or calcualted?", default=False)
 
 class EmissionData(models.Model):
     """Tracks an emission level under a given driving condition"""
     variant = models.ForeignKey(Variant, related_name='emissionDataSet')
     amount = models.FloatField("How much CO2 per kilometre the car emits")
-    condition = models.CharField("What type of driving this rating applies to", choices=FuelEconomy.CONDITION, max_length=10)
+    type = models.CharField("What type of driving this rating applies to", choices=FuelEconomy.CONDITION, max_length=32)
     calculated = models.BooleanField("Was this emission data scraped or calcualted?", default=False)
 
 class RawData(models.Model):
@@ -179,4 +180,4 @@ class RawData(models.Model):
     variant = models.ForeignKey(Variant, related_name='rawDataRecords')
     data = models.TextField("The raw JSON/XML as scraped")
     fetchDate = models.DateTimeField("When the data was fetched/scraped")
-    source = models.TextField("Where the data came from", max_length=255)
+    source = models.TextField("Where the data came from", max_length=512)

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="pageHeader center-block">View Cars by Body Type</h2>
+
+
+<div class="textbox 80-percent-wide">
+    <div class="keytext">Select a Body Type to see makes with cars of that type</div>
+
+    <div class="container-fluid">
+        <div class="row row-centered">
+            <div class="col-sm-4 col-min">
+                <a href="#">Sedan</a><br/>
+                <a href="#">Coupe</a><br/>
+                <a href="#">People Mover</a><br/>
+                <a href="#">Ute</a>
+            </div>
+            <div class="col-sm-4 col-min">
+                <a href="#">Hatchback</a><br/>
+                <a href="#">Convertible</a><br/>
+                <a href="#">Van</a><br/>
+                <a href="#">Cab Chassis</a>
+            </div>
+            <div class="col-sm-4 col-min">
+                <a href="#">Station Wagon</a><br/>
+                <a href="#">Sports</a><br/>
+                <a href="#">Light Truck</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

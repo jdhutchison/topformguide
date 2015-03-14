@@ -157,6 +157,10 @@ class CarSalesScraper:
         car.payload = dictUtils.getTokenFromValueAsInt(points, 'Payload', 0)
         car.weightUnit = 'kg'
 
+        car.bootVolume = dictUtils.getTokenFromValueAsInt(points, 'Boot / Load Space Min (L)', 0)
+        car.interiorVolume = dictUtils.getTokenFromValueAsInt(points, 'Boot / Load Space Max (L)', 0)
+        car.volumeUnit = 'L'
+
         if 'Acceleration 0-100km/h' in points:
             car.secondsTo = float(points['Acceleration 0-100km/h'][:-2])
             car.secondsToUnit = '100 kph'
@@ -183,14 +187,18 @@ class CarSalesScraper:
             return 'HATCHBACK'
         elif bodyType.find('WAGON') >= 0:
             return 'WAGON'
-        elif bodyType.find('SUV'):
+        elif bodyType.find('SUV') >= 0:
             return 'SUV'
-        elif bodyType.find('CONVERTIBLE'):
+        elif bodyType.find('CONVERTIBLE') >= 0:
             return 'CONVERTIBLE'
-        elif bodyType.find('COUPE'):
+        elif bodyType.find('COUPE') >= 0:
             return 'COUPE'
-        elif bodyType.find('CREWVAN'):
+        elif bodyType.find('CREWVAN') >= 0:
             return 'VAN'
+        elif bodyType.find('SEDAN') >= 0:
+            return 'SEDAN'
+        elif bodyType.find('CAB_CHASSIS') >= 0:
+            return 'CAB_CHASSIS'
         else:
             return bodyType
 

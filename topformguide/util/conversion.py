@@ -1,4 +1,4 @@
-import constants
+from topformguide.util import constants
 
 """Unit conversion helpers - especially metric to imperial and vice versa"""
 
@@ -24,6 +24,9 @@ def genericConversionFunction(amount, conversionFactor, precision):
     :param precision: [int] how many decimal places
     :return: [float] The converted amount, with the precision requested, if any
     """
+    if amount is None or conversionFactor is None:
+        return None
+
     newAmount = amount * conversionFactor
     if precision is not None and precision >= 0:
         newAmount = round(newAmount, precision)
@@ -56,7 +59,9 @@ def convertVolumeToLitres(amount, unit, precision=2):
     :param precision: [int] the precision (amount of decimal places) for the returned value. Defaults to 2
     :return: the volume as measured in litres.
     """
-    if unit == constants.LITRES:
+    if amount is None:
+        return None
+    elif unit == constants.LITRES:
         return round(amount, precision)
     elif unit == constants.GALLONS:
         return usGallonsToLitres(amount, precision)
@@ -85,9 +90,11 @@ def convertHorsepowerToKillowatts(amount, precision=2):
 
 
 def convertPowerToKilloWatts(amount, unit):
-    if unit is constants.KILLOWATT:
+    if amount is None:
+        return None
+    elif unit == constants.KILLOWATT:
         return amount
-    elif unit is constants.HORSEPOWER:
+    elif unit == constants.HORSEPOWER:
         return convertHorsepowerToKillowatts(amount)
     else:
         return None
@@ -113,8 +120,9 @@ def convertMassToKilograms(weight, unit, precision=2):
     :return: [float] the mass converted to kilograms, rounded to the requested precision
     """
 
-    kg = 0
-    if unit == constants.KILOGRAMS:
+    if weight is None:
+        return None
+    elif unit == constants.KILOGRAMS:
         kg = weight
     elif unit == constants.POUNDS:
         kg = weight * POUNDS_TO_KILOGRAMS
@@ -150,8 +158,9 @@ def convertLengthToMillimetres(length, unit, precision=1):
     # Force unit to lower case
     unit = unit.lower()
 
-    mm = 0
-    if unit == constants.MILLIMETRES:
+    if length is None:
+        return None
+    elif unit == constants.MILLIMETRES:
         mm = length
     elif unit == constants.CENTIMETRES:
         mm = length * 10
@@ -167,7 +176,9 @@ def convertLengthToMillimetres(length, unit, precision=1):
 
 
 def convertDistanceToKilometres(amount, unit, precision=2):
-    if unit == constants.MILES:
+    if amount is None:
+        return None
+    elif unit == constants.MILES:
         return genericConversionFunction(amount, MILES_TO_KILOMETRES, precision)
     elif unit == constants.KILOMETRES:
         return genericConversionFunction(amount, 1, precision)

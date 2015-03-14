@@ -1,6 +1,7 @@
 from scrapers.carsales import CarSalesScraper
 import json
-import sys,traceback
+import sys
+import traceback
 
 jsonFile = open('carsales-AU-data.json', 'w')
 writeFunction = lambda car: jsonFile.write(json.dumps(car.__dict__, default=lambda o: o.__dict__) + '\n')

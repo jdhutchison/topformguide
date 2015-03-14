@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load tfgfilters %}
+
+{% block title %}{{ car.model.year }} {{ car.model.make.name }} {{ car.model.name }} {{ car.name }}{% endblock %}
+
+{% block content %}
+<h2 class="pageHeader center-block">
+    {{ car.model.year }} {{ car.model.make.name }} {{ car.model.name }} {{ car.name }}
+</h2>
+
+<div class="textbox 80-percent-wide">
+    <div class="keytext">
+        {{ car.doors }} door, {% if car.speeds > 1 %}{{ car.speeds }} speed {% endif %}{{ car.transmission|fromenum }}
+        with a
+        {% if car.cylinders > 1 %}{{ car.cylinders }} cylinder, {% endif %}2.0L engine
+    </div>
+    <div class="rating">E-Go Rating: <span class="rating-value">{{ car.eGoRating|roundnum }}</span></div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th colspan="2">Overview</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="cardata">
+                <div class="item">Body Type</div>
+                <span class="value">{{ car.body|fromenum }}</span></td>
+            <td class="cardata">
+                <div class="item">Engine Type</div>
+                <span class="value">{{ car.engineType|fromenum }}</span></td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Doors</div>
+                <span class="value">{{ car.doors }}</span></td>
+            <td class="cardata">
+                <div class="item">Transmission</div>
+                <span class="value">{% if car.speeds > 1 %}{{ car.speeds }} speed {% endif %} {{ car.transmission|fromenum }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Seats</div>
+                <span class="value">{{ car.seats }}</span></td>
+            <td class="cardata">
+                <div class="item">Fuel Type</div>
+                <span class="value">{{ car.fuelType|fromenum }}</span></td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Airbags</div>
+                <span class="value">{{ car.airbags }}</span></td>
+            <td class="cardata">
+                <div class="item">Safety Rating</div>
+                <span class="value">{% if car.safetyRating %}{{ car.safetyRating }} (source: {{ car.safetyRatingSource }} {% endif %}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th colspan="2">Fuel, Economy and Emissions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in fuelData %}
+        <tr>
+            <td class="cardata">
+                <div class="item">{{ data.econ.type|fromenum }} Fuel Economy</div>
+                <span class="value"> {{ data.econ.amount|checkifint }}{{ data.econ.unit }}</span></td>
+            <td class="cardata">
+                <div class="item">{{ data.econ.type|fromenum }} Emissions</div>
+                <span class="value">{%if data.emissions.amount %}{{ data.emissions.amount|checkifint }}g of CO2/km{% endif %}</span>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th colspan="2">Engine Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="cardata">
+                <div class="item">Volume</div>
+                <span class="value"></span>
+            </td>
+            <td class="cardata">
+                <div class="item">Acceleration (0 - 100kph)</div>
+                <span class="value">{% if car.zeroTo100Kph %}{{ car.zeroTo100Kph }} seconds{% endif %}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Power</div>
+                        <span class="value">
+                            {% if car.enginePower %}
+                                {{ car.enginePower|checkifint }}kw
+                                {% if car.enginePowerRpms %}
+                                   @ {{ car.enginePowerRpms }} {% if car.enginePowerRpmsHigh %} - {{ car.enginePowerRpmsHigh }}{% endif %}rpms
+                                {% endif %}
+                            {% endif %}
+                      </span>
+            </td>
+            <td class="cardata">
+                <div class="item">Torque</div>
+                      <span class="value">
+                            {% if car.torque %}
+                                {{ car.torque|checkifint }}Nm
+                                {% if car.torqueRpms %}
+                                   @ {{ car.torqueRpms }} {% if car.torqueRpmsHigh %} - {{ car.torqueRpmsHigh }}{% endif %}rpms
+                                {% endif %}
+                            {% endif %}
+                      </span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Cylinders</div>
+                <span class="value">{{ car.cylinders }}</span>
+            </td>
+            <td class="cardata">
+                <div class="item">Top Speed</div>
+                <span class="value">{% if car.topSpeed %}{{ car.topSpeed|checkifint }}kph{% endif %}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th colspan="2">Weight and Dimensions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="cardata">
+                <div class="item">Kerb Weight</div>
+                <span class="value">{% if car.kerbWeight %}{{ car.kerbWeight|checkifint }}kg{% endif %}</span>
+            </td>
+            <td class="cardata">
+                <div class="item">Length</div>
+                <span class="value">{% if car.length %}{{ car.length }}mm{% endif %}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Tare Mass</div>
+                <span class="value">{% if car.tareWeight %}{{ car.tareWeight|checkifint }}kg{% endif %}</span>
+            </td>
+            <td class="cardata">
+                <div class="item">Width</div>
+                <span class="value">{% if car.width %}{{ car.width }}mm{% endif %}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Gross Mass</div>
+                <span class="value">{% if car.grossWeight %}{{ car.grossWeight|checkifint }}kg{% endif %}</span>
+            </td>
+            <td class="cardata">
+                <div class="item">Height</div>
+                <span class="value">{% if car.height %}{{ car.height }}mm{% endif %}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Payload</div>
+                <span class="value">{% if car.payload %}{{ car.payload|checkifint }}kg{% endif %}</span></td>
+            <td class="cardata">
+                <div class="item">Wheelbase</div>
+                <span class="value">{% if car.wheelbase %}{{ car.wheelbase }}mm{% endif %}</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="cardata">
+                <div class="item">Internal Volume</div>
+                <span class="value">{% if car.internalVolume %}{{ car.internalVolume|checkifint }}L{% endif %}</span>
+            </td>
+            <td class="cardata">
+                <div class="item">Boot Volume</div>
+                <span class="value">{% if car.bootVolume %}{{ car.bootVolume|checkifint }}L{% endif %}</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

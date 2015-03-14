@@ -26,7 +26,8 @@ class CarData:
         self.fuelTank = None # Capacity of Fuel take, regardless of unit
         self.fuelTankUnit = None # One of LITRES, kW, GALLONS
         self.fuelRange = None
-        self.fuelRangeUnit = None # Optional (mandatory is fuelRange set), String,
+        self.batteryRange = None
+        self.rangeUnit = None  # Optional (mandatory is fuelRange set), String,
         self.emissions = []
         self.topSpeed = None
         self.topSpeedUnit = None # One of KPH, MPH
