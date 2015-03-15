@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load tfgfilters %}
+
+{% block title %}Top {{ variants|length }} best rating {{ friendly }}s{% endblock %}
+
+{% block content %}
+<h2 class="pageHeader center-block">View {{ variants|length }} best rating {{ friendly }}s</h2>
+
+<div class="textbox80">
+    <div class="keytext">Select a car below to see that vehicle's full details:</div>
+    <div class="clearfix"></div>
+    <div class="container-fluid">
+        <div class="row row-centered">
+            <div class="col-sm-12 col-centered">
+                <table class="table">
+                    <thead>
+                    <tr></tr>
+                    </thead>
+                    <tbody>
+                    {% for car in variants %}
+                    <tr data-carid="{{ car.id }}">
+                        <td class="detailscell">
+                            {{ car.model.year}} {{ car.model.make.name }} {{ car.model.name}} {{ car.name }}
+                        </td>
+                        <td class="secondarycell">
+                            {% if car.speeds > 1 %}{{ car.speeds }} speed {% endif %}
+                            {{ car.transmission|fromenum }}, {{ car.doors }} door {{ car.body|fromenum }}
+                        </td>
+                        <td class="ratingcell">{{ car.eGoRating|roundnum }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+$(document).ready(function() {
+    $('tbody').on('mouseover', 'td', function(event) { console.log(event.target.parentNode); $(event.target.parentNone).addClass('hover'); });
+    $('tbody').on('mouseout', 'td', function(event) { $(event.target.parentNode).removeClass('hover'); });
+    $('tbody').on('click', 'tr', function(event) { window.location = '/car/' + event.target.parentNode.dataset.carid; });
+});
+
+    </script>
+    {% endblock %}

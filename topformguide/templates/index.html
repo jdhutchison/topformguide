@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}View Cars by Type{% endblock %}
+{% block content %}
+<div class="textbox 60-percent-wide">
+    <p>Top Form Guide is modelled on a new concept for rating the efficieny, emissions and performance of motor
+        vehicles.</p>
+
+    <p>
+        We have called this production rating E-GO where E represents a vehcile's efficiency and emissions and GO
+        represents its potential performance relative to its weight.
+    </p>
+</div>
+
+<div class="linkrow">
+    <a class="buttonlink" href="#"><span>Search All Cars</span></a>
+    <a class="buttonlink" href="#"><span>View By Make</span></a>
+    <a class="buttonlink" href="body/types"><span>View by Body Type</span></a>
+</div>
+<div class="linkrow row-centered">
+    <a class="buttonlink" href="/top/bodytype"><span>Top 20 Cars By Bodytype</span></a>
+    <a class="buttonlink" href="/top/make"><span>Top 20 Cars By Make</span></a>
+    <a class="buttonlink" href="/top/fueltype"><span>Top 20 Cars By Fuel Type</span></a>
+
+</div>
+{% endblock %}

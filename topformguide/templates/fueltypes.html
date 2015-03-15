@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="pageHeader center-block">Top Rating Cars by Fuel Type</h2>
+
+
+<div class="textbox 80-percent-wide">
+    <div class="keytext">Select a Fuel Type to see the Top 20 rating vehicles for that type</div>
+
+    <div class="container-fluid">
+        <div class="row row-centered">
+            <div class="col-sm-4 col-min">
+                <a href="/top/fueltype/diesel">Diesel</a><br/>
+            </div>
+            <div class="col-sm-4 col-min">
+                <a href="/top/fueltype/petrol">Petrol</a><br/>
+            </div>
+            <div class="col-sm-4 col-min">
+                <a href="/top/fueltype/electric">Electric</a><br/>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

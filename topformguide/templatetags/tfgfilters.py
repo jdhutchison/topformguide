@@ -12,6 +12,9 @@ def fromenum(value):
 
 @register.filter
 def roundnum(value, precision=2):
+    if type(value).__name__ != 'float':
+        return "'" + str(value) + "'"
+
     return round(value, precision)
 
 

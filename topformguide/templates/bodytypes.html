@@ -1,29 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="pageHeader center-block">View Cars by Body Type</h2>
+<h2 class="pageHeader center-block">{{ headingPrefix }} Cars by Body Type</h2>
 
 
 <div class="textbox 80-percent-wide">
-    <div class="keytext">Select a Body Type to see makes with cars of that type</div>
+    <div class="keytext">Select a Body Type to see {{ instructionInsert }} of that type</div>
 
     <div class="container-fluid">
         <div class="row row-centered">
             <div class="col-sm-4 col-min">
-                <a href="#">Sedan</a><br/>
-                <a href="#">Coupe</a><br/>
-                <a href="#">People Mover</a><br/>
-                <a href="#">Ute</a>
+                <a href="{{ path }}/sedan">Sedan</a><br/>
+                <a href="{{ path }}/coupe">Coupe</a><br/>
+                <a href="{{ path }}/people-mover">People Mover</a><br/>
+                <a href="{{ path }}/ute">Ute</a>
             </div>
             <div class="col-sm-4 col-min">
-                <a href="#">Hatchback</a><br/>
-                <a href="#">Convertible</a><br/>
-                <a href="#">Van</a><br/>
-                <a href="#">Cab Chassis</a>
+                <a href="{{ path }}/hatchback">Hatchback</a><br/>
+                <a href="{{ path }}/convertible">Convertible</a><br/>
+                <a href="{{ path }}/van">Van</a><br/>
+                <a href="{{ path }}/cab-chassis">Cab Chassis</a>
             </div>
             <div class="col-sm-4 col-min">
-                <a href="#">Station Wagon</a><br/>
-                <a href="#">Sports</a><br/>
-                <a href="#">Light Truck</a>
+                <a href="{{ path }}/wagon">Station Wagon</a><br/>
+                <a href="{{ path }}/sport">Sports</a><br/>
+                <a href="{{ path }}/light-truck">Light Truck</a>
             </div>
         </div>
     </div>

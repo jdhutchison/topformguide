@@ -1,0 +1,85 @@
+body { 
+  background: url('../images/car4.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  color: white;
+}
+
+div#content			{ padding-top: 2%; max-width: 960px; margin: 0px auto; }
+
+div#heading   		{ width: 60%; margin: 0px auto; }
+a#heading   		{ width: 60%; margin: 0px auto; display: block; color: white; text-decoration: none; }
+.imgbox				{ width: 25%; vertical-align: top; display: inline-block; }
+#heading h1   		{ font-size: 4rem; font-weight: bolder; text-align: center; }
+#heading img 		{ vertical-align: bottom; width: 100%; display: inline-block; }
+
+div#title        		{ color: white; text-transform: uppercase; width:74%; display: inline-block; }
+
+div#undertext 		{ font-size: 1.4rem; font-weight: bold; text-align: center;}
+
+div.textbox			{ 
+						background-color: rgba(100, 100, 100, 0.5); color: white; font-size: 1.4rem; -webkit-border-radius: 20px;
+						-moz-border-radius: 20px; border-radius: 20px; padding: 2%; margin: 3% auto; font-weight: bold; 
+					}
+div.textbox80		{ 
+						background-color: rgba(100, 100, 100, 0.5); color: white; font-size: 1.4rem; -webkit-border-radius: 20px;
+						-moz-border-radius: 20px; border-radius: 20px; padding: 2%; margin: 3% auto; font-weight: bold; width: 80%;
+					}
+					
+div.80-percent-wide	{ max-width: 80%; }
+div.60-percent-wide	{ width: 60%; }
+
+td > div.item			{ width: 40%; font-weight: bold; display: inline-block; }
+td > span.value		{ font-weight: 300; }
+td.cardata			{ width: 50%;}				
+					
+div.linkrow			{ margin: 0px auto; padding: 10px; display: flex; justify-content: center; align-content: center; flex-direction: row; }
+
+a.buttonlink		{ 
+						text-align: center; font-weight: bold; color: white; background: darkblue; width: 28.33333%; margin: 1% 2.5%;
+						font-size: 2rem; -webkit-border-radius: 10px;	-moz-border-radius: 10px; border-radius: 10px; text-decoration: none;
+						vertical-align: center; height: 60px;
+						
+						display: flex; justify-content: center; align-content: center; flex-direction:column;
+					}
+					
+a.buttonlink:hover   { color: black; background-color: white; text-decoration: none; }
+			
+a.buttonlink > span	{ vertical-align: center; text-align: center;  }
+
+h1, h2, h3			{ color: white; }
+
+.pageHeader			{ margin: 2% auto; font-size: 3.5rem; font-weight: bolder; width: 60%; text-align: center; }
+
+div.keytext			{ font-size: 1.75rem; text-align: center; width: 100%; margin-bottom: 1rem; }
+div.rating			{ font-size: 2rem; text-align: center; width: 100%; }
+span.rating-value	{ color: #33CC33; }
+
+.row-centered 		{  text-align:center;}
+.col-centered 		{ display:inline-block; float:none; text-align:left; margin-right:-4px; }
+.col-min 			{ min-width:300px; }
+
+a                   { color: silver }
+a:hover             { color: white; text-decoration: underline; }
+
+/* Car details list */
+tr.hover			{ background-color: grey; text-decoration: underline; cursor: pointer; }
+td.detailscell		{ width: 40%; }
+td.secondarycell        { width: 50%; font-weight: 300; }
+td.ratingcell		{ color: #33CC33; width: 10% }
+span.maindetails        { font-weight: bold; }
+span.secondarydetails { font-weight: 300; }
+					
+@media screen and (max-width: 600px) { 
+	div.textbox { width: 95%; } 
+	div.80-percent-wide	{ width: 95%; }
+    div.60-percent-wide	{ width: 95%; }
+}
+
+
+
+		
