@@ -13,7 +13,8 @@ def index(request):
 
 
 def bodylist(request):
-    return render(request, 'bodytypes.html')
+    return render(request, 'bodytypes.html',
+                  {'path': '/body', 'headingPrefix': 'View', 'instructionInsert': 'a manufacturer\'s cars'})
 
 
 def displayCar(request, variantId):
@@ -38,20 +39,36 @@ def topFuelTypes(request):
 
 
 def showMakes(request, type=None, filter=None):
-    path = ''
+    path = '/cars'
     if type == 'rating':
         path = '/top/make'
     elif type == 'body':
-        path = '/body'
+        path = '/body/' + filter
 
-    makes = getMakes()
+    makes = getMakes(None)
     makeLists = splitIntoLists(makes, 3)
     return render(request, 'makelist.html', {'lists': makeLists, 'path': path})
 
 
+def showModelsForMake(request, make):
+    allModels = getModelNamesByMake(string.deslugify(make))
+    lists = splitIntoLists(allModels, 3)
+    return render(request, 'modelsformake.html',
+                  {'lists': lists, 'path': '/cars/' + make, 'make': string.deslugify(make)})
+
+
+def showVariantsForBodyTypeAndMake(request, bodyType, make):
+    properMake = string.deslugify(make)
+    bodyEnum = string.slugToConstant(bodyType)
+    variants = getVariants(make=properMake, body=bodyEnum)
+    return render(request, 'bodyandmake.html',
+                  {'make': properMake, 'body': bodyEnum, 'variants': variants})
+
+
+
 def getTopVariantsForType(request, listType, type, number=20):
     filterValue = string.slugToConstant(type)
-    friendly = string.slugToHumanReadable(type)
+    friendly = string.deslugify(type)
     querySet = models.Variant.objects.filter(eGoRating__isnull=False)
     if listType == 'body':
         querySet = querySet.filter(body=filterValue)
@@ -65,6 +82,17 @@ def getTopVariantsForType(request, listType, type, number=20):
     return render(request, 'topcarlist.html', {'friendly': friendly, 'variants': variants})
 
 
+def variantsForMakeAndModel(request, make, model, year=None):
+    makeEnum = string.deslugify(make)
+    modelEnum = string.deslugify(model)
+    if year is not None:
+        year = int(year)
+
+    variants = getVariants(make=makeEnum, model=modelEnum, year=year).all()
+    return render(request, 'makeandmodel.html', {'make': makeEnum, 'model': modelEnum, 'variants': variants})
+
+
+# DATABASE QUERIES
 def getMakes(bodyType=None):
     querySet = models.Make.objects.values_list('name',
                                                flat=True).distinct()  # .filter(models__variants__eGoRating__isnull=False)
@@ -72,6 +100,38 @@ def getMakes(bodyType=None):
         querySet = querySet.filter(models__variants__body=bodyType)
     return querySet.all()
 
+
+def getModelsByMake(make):
+    return models.CarModel.objects.filter(make__name__iexact=make).order_by('name', 'year').all()
+
+
+def getModelNamesByMake(make):
+    return models.CarModel.objects.filter(make__name__iexact=make) \
+        .values_list('name', flat=True).distinct().all()
+
+
+def getVariants(make=None, model=None, year=None, body=None, engine=None, fuel=None):
+    query = models.Variant.objects.filter(eGoRating__isnull=False)
+
+    if make is not None:
+        query = query.filter(model__make__name__iexact=make)
+
+    if model is not None:
+        query = query.filter(model__name__iexact=model)
+
+    if year is not None:
+        query = query.filter(model__year=year)
+
+    if body is not None:
+        query = query.filter(body=body)
+
+    if engine is not None:
+        query = query.filter(engineType=engine)
+
+    if fuel is not None:
+        query = query.filter(fuelType=fuel)
+
+    return query.order_by('name', '-eGoRating')
 
 def splitIntoLists(simpleList, howMany):
     lists = []

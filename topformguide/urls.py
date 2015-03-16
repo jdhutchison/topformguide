@@ -15,10 +15,15 @@ urlpatterns = patterns('',
 
     # Viewing by group
     url(r'^body/types$', 'topformguide.views.bodylist'),  # View all body types
-    url(r'^body/(\w+)$', 'topformguide.views.index'),  # View by body types
-    url(r'^body/(\w+)/(\w+)$', 'topformguide.views.index'),  # View by body type and make
-    url(r'^(\w+)$', 'topformguide.views.index'),  # View by make
-    url(r'^(\w+)/(\w+)/(\d{4})$', 'topformguide.views.index'),  # View by make, model and year
+    url(r'^body/(?P<filter>\w+)$', 'topformguide.views.showMakes', {'type': 'body'}),  # View by body types
+    url(r'^body/(\w+)/(\w+)$', 'topformguide.views.showVariantsForBodyTypeAndMake'),  # View by body type and make
+
+    # View by make, model and year
+    url(r'^cars$', 'topformguide.views.showMakes'),  # View models
+    url(r'^cars/([\w\-]+)$', 'topformguide.views.showModelsForMake'),  # View models by make
+    url(r'^cars/([\w\-]+)/([\w\-]+)$', 'topformguide.views.variantsForMakeAndModel'),  # View by make, model
+    url(r'^cars/([\w\-]+)/([\w\-]+)/(\d{4})$', 'topformguide.views.variantsForMakeAndModel'),
+    # View by make, model and year
 
     # Top 20 lists
     url(r'^top/make$', 'topformguide.views.showMakes', {'type': 'rating', 'filter': None}),

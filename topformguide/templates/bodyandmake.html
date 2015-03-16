@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% load tfgfilters %}
 
-{% block title %}Top {{ variants|length }} best rating {{ friendly }}s{% endblock %}
+{% block title %}View all {{ make|fromenum }} {{ body|fromenum }}s{% endblock %}
 
 {% block content %}
-<h2 class="pageHeader center-block">View {{ variants|length }} best rating {{ friendly }}s</h2>
+<h2 class="pageHeader center-block">View all {{ make|fromenum }} {{ body|fromenum }}s</h2>
 
 <div class="textbox80">
     <div class="keytext">Select a car below to see that vehicle's full details:</div>

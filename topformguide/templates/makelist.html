@@ -1,21 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}Top Rating Cars by Make{% endblock %}
 {% block content %}
 <h2 class="pageHeader center-block">Top Rating Cars by Make</h2>
 
-
 <div class="textbox 80-percent-wide">
     <div class="keytext">Select a Make to see the Top 20 rating vehicles for that make</div>
-
-    <div class="container-fluid">
-        <div class="row row-centered">
-            {% for list in lists %}
-            <div class="col-sm-4 col-min">
-                {% for make in list %}
-                <a href="{{ path }}/{{ make|slugify }}">{{ make }}</a><br/>
-                {% endfor %}
-            </div>
-            {% endfor %}
-        </div>
+    {% include 'includes/listoflists.html' %}
     </div>
-</div>
 {% endblock %}

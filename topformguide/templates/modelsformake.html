@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load tfgfilters %}
+
+{% block title %}View Models for {{ make }}{% endblock %}
+{% block content %}
+<h2 class="pageHeader center-block">View Models for {{ make|fromenum }}</h2>
+
+<div class="textbox 80-percent-wide">
+    <div class="keytext">Select a Model to see the vehicles for that model:</div>
+    {% include 'includes/listoflists.html' %}
+</div>
+{% endblock %}

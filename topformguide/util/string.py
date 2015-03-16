@@ -22,8 +22,8 @@ def constantToSlug(constant):
     return constant.replace('_', '-').lower()
 
 
-def slugToHumanReadable(slug):
+def deslugify(slug):
     if slug is None:
         return None
 
-    return slug.replace('-', '_').title()
+    return slug.replace('-', ' ').title()

@@ -1,0 +1,11 @@
+<div class="container-fluid">
+    <div class="row row-centered">
+        {% for list in lists %}
+        <div class="col-xs-4 col-min">
+            {% for item in list %}
+            <a href="{{ path }}/{{ item|slugify }}">{{ item }}</a><br/>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>

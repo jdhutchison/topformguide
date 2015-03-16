@@ -1,0 +1,30 @@
+{% load staticfiles %}
+{% load tfgfilters %}
+
+<div class="clearfix"></div>
+<div class="container-fluid">
+    <div class="row row-centered">
+        <div class="col-sm-12 col-centered">
+            <table class="table">
+                <thead>
+                <tr></tr>
+                </thead>
+                <tbody>
+                {% for car in variants %}
+                <tr data-carid="{{ car.id }}">
+                    <td class="detailscell">
+                        {{ car.model.year}} {{ car.model.make.name }} {{ car.model.name}} {{ car.name }}
+                    </td>
+                    <td class="secondarycell">
+                        {% if car.speeds > 1 %}{{ car.speeds }} speed {% endif %}
+                        {{ car.transmission|fromenum }}, {{ car.doors }} door {{ car.body|fromenum }}
+                    </td>
+                    <td class="ratingcell">{{ car.eGoRating|roundnum }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/tablerowselect.js' %}"></script>
