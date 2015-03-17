@@ -2,10 +2,6 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'topformguide.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
     # Static information pages
     url(r'^admin/', include(admin.site.urls)),
     url(r'^/?$^', 'topformguide.views.index'),
@@ -13,9 +9,13 @@ urlpatterns = patterns('',
 
     url(r'^car/(\d+)$', 'topformguide.views.displayCar'),  # View one car
 
+    # Search
+    url(r'^search$', 'topformguide.views.search'),
+    url(r'^searchresults$', 'topformguide.views.searchresults'),
+
     # Viewing by group
     url(r'^body/types$', 'topformguide.views.bodylist'),  # View all body types
-    url(r'^body/(?P<filter>\w+)$', 'topformguide.views.showMakes', {'type': 'body'}),  # View by body types
+    url(r'^body/(?P<filter>[\w\-]+)$', 'topformguide.views.showMakes', {'type': 'body'}),  # View by body types
     url(r'^body/(\w+)/(\w+)$', 'topformguide.views.showVariantsForBodyTypeAndMake'),  # View by body type and make
 
     # View by make, model and year

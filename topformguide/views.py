@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
@@ -6,6 +5,7 @@ from topformguide import models
 from topformguide.util import constants
 from topformguide.util import calculations
 from topformguide.util import string
+from topformguide.util import numbers
 
 
 def index(request):
@@ -29,7 +29,6 @@ def displayCar(request, variantId):
 
 
 def topBodyTypes(request):
-    path = '/top/bodytype'
     return render(request, 'bodytypes.html',
                   {'path': '/top/bodytype', 'headingPrefix': 'Top 20', 'instructionInsert': 'the top 20 rated cars'})
 
@@ -86,11 +85,27 @@ def variantsForMakeAndModel(request, make, model, year=None):
     makeEnum = string.deslugify(make)
     modelEnum = string.deslugify(model)
     if year is not None:
-        year = int(year)
+        year = numbers.toInt(year)
 
     variants = getVariants(make=makeEnum, model=modelEnum, year=year).all()
     return render(request, 'makeandmodel.html', {'make': makeEnum, 'model': modelEnum, 'variants': variants})
 
+
+# SEARCH VIEWS
+def search(request):
+    return render(request, 'searchform.html', {'makes': getMakes(), 'bodyTypes': constants.ALL_BODY_TYPES})
+
+
+def searchresults(request):
+    year = numbers.toInt(request.POST.get('year'))
+    make = request.POST.get('make')
+    if not make:
+        make = None
+    body = request.POST.get('body')
+    if not body:
+        body = None
+    variants = getVariants(make, None, year, body, request.POST.get('engine'), request.POST.get('fuel'))
+    return render(request, 'searchresults.html', {'variants': variants.all()})
 
 # DATABASE QUERIES
 def getMakes(bodyType=None):

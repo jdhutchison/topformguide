@@ -1,0 +1,74 @@
+{% load tfgfilters %}
+
+<div class="clearfix"></div>
+
+<form action="/searchresults" method="post" class="form-horizontal">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="make" class="col-xs-3 control-label">Make</label>
+
+        <div class="col-xs-9">
+            <select class="form-control" id="make" name="make">
+                <option value="">Any</option>
+                {% for make in makes %}
+                <option value="{{ make }}">{{ make }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="year" class="col-xs-3 control-label">Year</label>
+
+        <div class="col-xs-2">
+            <input type="text" class="form-control" id="year" name="year"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="make" class="col-xs-3 control-label">Body Type</label>
+
+        <div class="col-xs-9">
+            <select class="form-control" id="body" name="body">
+                <option value="">Any</option>
+                {% for type in bodyTypes %}
+                <option value="{{ type }}">{{ type|fromenum }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-3">Engine Type</label>
+
+        <div class="col-xs-9">
+            <label class="radio-inline">
+                <input type="radio" id="engineRadio1" name="engine" value="PISTON"> Piston
+            </label>
+            <label class="radio-inline">
+                <input type="radio" id="engineRadio2" name="engine" value="HYBRID"> Hybrid
+            </label>
+            <label class="radio-inline">
+                <input type="radio" id="engineRadio3" name="engine" value="ELECTRIC"> Electric
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-3">Fuel Type</label>
+
+        <div class="col-xs-9">
+            <label class="radio-inline">
+                <input type="radio" id="fuelRadio1" name="fuel" value="PETROL"> Petrol
+            </label>
+            <label class="radio-inline">
+                <input type="radio" id="fuelRadio2" name="fuel" value="DIESEL"> Diesel
+            </label>
+            <label class="radio-inline">
+                <input type="radio" id="fuelRadio3" name="fuel" value="ELECTRIC"> Electric
+            </label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary col-xs-offset-3">Search</button>
+</form>

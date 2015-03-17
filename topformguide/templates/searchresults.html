@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+{% block content %}
+<h2 class="pageHeader center-block">Search Result</h2>
+
+<div class="textbox 80-percent-wide">
+    {% if variants|length > 0 %}
+    <div class="keytext">
+        Here are the results of your search. There were {{ variants|length }} matches.
+        Select a car to see more details:
+    </div>
+    <div class="clearfix"></div>
+    {% include 'includes/cartable.html' %}
+    {% else %}
+    <div class="keytext">
+        Your search returned 0 results. You may want to <a href="/search">search again</a>.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
