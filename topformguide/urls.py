@@ -16,7 +16,8 @@ urlpatterns = patterns('',
     # Viewing by group
     url(r'^body/types$', 'topformguide.views.bodylist'),  # View all body types
     url(r'^body/(?P<filter>[\w\-]+)$', 'topformguide.views.showMakes', {'type': 'body'}),  # View by body types
-    url(r'^body/(\w+)/(\w+)$', 'topformguide.views.showVariantsForBodyTypeAndMake'),  # View by body type and make
+    url(r'^body/([\w\-]+)/([\w\-]+)$', 'topformguide.views.showVariantsForBodyTypeAndMake'),
+    # View by body type and make
 
     # View by make, model and year
     url(r'^cars$', 'topformguide.views.showMakes'),  # View models

@@ -13,7 +13,7 @@ class CarData:
         self.enginePower = None # Optional, int - engine power in kw or hp
         self.enginePowerRpm = None # Optional, int
         self.enginePowerRpmHigh = None # Optional, int
-        self.enginePowerUnit = None # Optional, string - unit for above. One of
+        self.enginePowerUnit = None  # Optional, string - unit for above. One of kW or hp
         self.engineType = None # One of 'ELECTRIC', 'COMBUSTION', 'PISTON', 'HYBRID'
         self.engineCylinders = None
         self.torque = None # Optional, float
@@ -64,4 +64,26 @@ class EmissionLevel:
         self.amount = None
         self.unit = None
         self.type = None
+
+
+class Engine:
+    def __index__(self):
+        self.type = None  # Mandatory, string - the type of engine
+        self.fuelType = None  # One of 'ELECTRIC', 'PETROL', 'LPG'. 'ULP' should be converted to PETROL
+        self.fuelTank = None  # Capacity of Fuel take, regardless of unit
+        self.fuelTankUnit = None  # One of LITRES, kW, GALLONS
+        self.enginePowerRpm = None  # Optional, int
+        self.enginePowerRpmHigh = None  # Optional, int
+        self.enginePowerUnit = None  # Optional, string - unit for above. One of kW or hp
+        self.engineType = None  # One of 'ELECTRIC', 'COMBUSTION', 'PISTON', 'HYBRID'
+        self.engineCylinders = None
+        self.torque = None  # Optional, float
+        self.torqueRpm = None  # Optional, float - at what RPM the above torque mesurement is good for
+        self.torqueRpmHigh = None
+        self.topSpeed = None
+        self.topSpeedUnit = None  # One of KPH, MPH
+        self.secondsTo = None  # How many seconds to get to some speed, ie. 100kmh/60mph
+        self.secondsToUnit = None  # The speed for above - should be one of '100KPH' or '60MPH'
+
+        #
 

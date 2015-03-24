@@ -5,6 +5,7 @@ from topformguide.util import conversion
 from topformguide.util import constants
 from topformguide.util import calculations
 from topformguide import models
+from util.model import findRating
 
 
 def mapFuelEconomyFromJson(jsonText):
@@ -47,7 +48,7 @@ def mapAndConvertFuelEconomies(econs, variant):
 
 
     # If there is no combined rating then create one if possible
-    if calculations.findRating(variant.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM) is None:
+    if findRating(variant.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM) is None:
         averaged = models.FuelEconomy()
         averaged.amount = calculations.calculateCombinedFuelRating(variant)
         averaged.type = constants.COMBINED
@@ -72,7 +73,7 @@ def mapEmissions(emissions, variant):
         # If it is l/100kn
         if econ.unit == constants.LITRES_PER_100_KM:
             # find matching emission
-            matchingEmission = calculations.findRating \
+            matchingEmission = findRating \
                 (variant.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM)
             if matchingEmission is None:
                 newEmissionData = convertFuelEconomyToEmissions(econ, variant.fuelType)
@@ -91,7 +92,7 @@ def getStdEmission(car):
     if car.fuelType == 'ELECTRIC':
         return 0.0
 
-    bestEmissionData = calculations.findRating(car.emissionDataSet, constants.COMBINED)
+    bestEmissionData = findRating(car.emissionDataSet, constants.COMBINED)
     if bestEmissionData is None:
         return None
     else:

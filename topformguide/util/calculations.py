@@ -1,10 +1,15 @@
 from topformguide.util.constants import COMBINED, URBAN, CITY, EXTRA_URBAN, HIGHWAY, MILES_PER_GALLON
 from topformguide.util import conversion
 from topformguide.util import constants
+from topformguide.util import model
+
+"""
+Contains formulas for the calculation of E-Go ratings, and fuel economy or emissions data.
+"""
 
 RATING_TYPE_ORDER = (COMBINED, URBAN, CITY, EXTRA_URBAN, HIGHWAY)
 
-# Fuel volume to mass constants
+# Fuel volume to mass constants - how many kg a litre of each fuel weighs
 PETROL_MASS_1L = 0.73722
 DIESEL_MASS_1L = 0.8508
 LPG_MASS_1L = 0.493
@@ -15,7 +20,15 @@ PETROL_CO2_PER_LITRE = 2392
 LPG_CO2_PER_LITRE = 1665
 DIESEL_CO2_PER_LITRE = 2640
 
-def checkCarHasEGoPreRequisites(car):
+
+def __checkCarHasEGoPreRequisites(car):
+    """
+    Checls that a car has all the data required to calculate an E-Go rating. It essentailly
+    enforces pre-conditions for the calculateEGo function.
+
+    :param car: [models.Variant] the car in question
+    :return: [boolean] rue if the car has everything needed, false in any other circumsatnce.
+    """
     if car.standardEmissions is None:
         return False
     if car.kerbWeight is None:
@@ -24,18 +37,24 @@ def checkCarHasEGoPreRequisites(car):
         return False
     if car.enginePower is None:
         return False
-    if findRating(car.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM) is None:
+    if model.findRating(car.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM) is None:
         return False
 
     return True
 
 
 def calculateEGo(car):
-    if checkCarHasEGoPreRequisites(car) is False:
+    """
+    Calculates the E-Go rating for the given vehicle.
+
+    :param car: [models.Variant] the car in question
+    :return: [float] E-Go rating for the given car, or None if it cannot be calculated.
+    """
+    if __checkCarHasEGoPreRequisites(car) is False:
         return None
 
     tonnage = car.kerbWeight / 1000.0
-    combinedL100km = findRating(car.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM).amount
+    combinedL100km = model.findRating(car.fuelEconomySet, constants.COMBINED, constants.LITRES_PER_100_KM).amount
     kmPerLitre = 100.0 / combinedL100km
 
     go = car.enginePower / tonnage * (car.torque / 1000) / tonnage
@@ -45,8 +64,14 @@ def calculateEGo(car):
 
 
 def calculateEmissions(car):
+    """
+    Calculates emissions for a can based on the best fuel economy rating the car has.
+    :param car: [models.Variant] the vehicle to calculate some emissions for.
+    :return: [float] The best emissions (as an amount of CO2 per km travelled) the given vehicle can produce.
+    """
+
     # Find the right fuel econ to base it off
-    bestEconData = findMostSuitableRating(car.fuelEcononySet)
+    bestEconData = __findMostSuitableRating(car.fuelEcononySet)
     if bestEconData is None:
         return None
 
@@ -72,30 +97,9 @@ def calculateEmissionForFuelEconomy(fuelEcon, fuelType):
     kmPerLitre = 100.0 / fuelEcon.amount
     return calculateEmissionsForFuel(kmPerLitre, fuelType)
 
-def findMostSuitableRating(ratingSet, unit=None):
-    return findFirstMatching(ratingSet, RATING_TYPE_ORDER, unit)
 
-def findFirstMatching(ratingSet, ratingTypes, unit=None):
-    for type in ratingTypes:
-        rating = findRating(ratingSet, type, unit)
-        if rating is not None:
-            return rating
-
-    return None
-
-def findRating(ratingSet, ratingType, unit=None):
-    """
-    Finds the first rating in the rating set with a matching type and unit (if specified)
-    :param ratingSet: [iterable] the set of all ratings
-    :param ratingType: [string] one of RATING_TYPE_ORDER
-    :param unit: type of unit - CO2/km L/100km or MPG. If none then unit match not needed
-    :return: a rating with the matching type or unit
-    """
-    for rating in ratingSet.all():
-        if rating.type == ratingType:
-            if unit is None or rating.unit == unit:
-                return rating
-    return None
+def __findMostSuitableRating(ratingSet, unit=None):
+    return model.findFirstMatching(ratingSet, RATING_TYPE_ORDER, unit)
 
 def calculateEmissionsForFuel(kmPerLitre, fuelType):
     """
@@ -120,7 +124,7 @@ def calculateEmissionsForFuel(kmPerLitre, fuelType):
 def calculateKerbWeight(car):
     """
     Calculates the Kerb Weight fro the Tare Weight for a car, by calculating the
-    mass of half a tank of fuel, pus a 75kg driver.
+    mass of half a tank of fuel, plus a 75kg driver.
 
     :param car: [models.Variant] which vehicle to calculate for
     :return: [float] Kerb Weight mass in kilograms, or None if not enough data available to
@@ -141,7 +145,7 @@ def getFuelMass(type, litres, precision=0):
     """
     For a given type and volume of fuel, calculates the mass in kilograms. Results roudned to
     nearest integer unless a precision is set.
-    :param type:
+    :param type: [sting] the type of fuel.
     :param litres: [float] The amount of litres
     :param precision: [int] How many decimal places to round to (default 0)
     :return: [float] The mass, in kg, of the fuel, rounded to whatever precision requested
@@ -160,13 +164,13 @@ def getFuelMass(type, litres, precision=0):
 
 def calculateCombinedFuelRating(car):
     """
-    Will average out a urban and non urban fuel economy if
-    :param car:
+    Will average out a urban and non urban fuel economy if they both exist for the given variant.
+    :param car: [models.Variant] the variant to produce the average for.
     :return:
     """
-    cityEcon = findFirstMatching \
+    cityEcon = model.findFirstMatching \
         (car.fuelEconomySet, [constants.URBAN, constants.CITY], constants.LITRES_PER_100_KM)
-    nonCityEcon = findFirstMatching \
+    nonCityEcon = model.findFirstMatching \
         (car.fuelEconomySet, [constants.EXTRA_URBAN, constants.HIGHWAY], constants.LITRES_PER_100_KM)
     if cityEcon is not None and nonCityEcon is not None:
         return (cityEcon.amount + nonCityEcon.amount) / 2

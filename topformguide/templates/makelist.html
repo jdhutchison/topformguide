@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Top Rating Cars by Make{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 {% block content %}
-<h2 class="pageHeader center-block">Top Rating Cars by Make</h2>
+<h2 class="pageHeader center-block">{{ title }}</h2>
 
 <div class="textbox 80-percent-wide">
-    <div class="keytext">Select a Make to see the Top 20 rating vehicles for that make</div>
+    <div class="keytext">{{ text }}</div>
     {% include 'includes/listoflists.html' %}
     </div>
 {% endblock %}

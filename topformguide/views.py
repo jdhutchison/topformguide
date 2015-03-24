@@ -2,11 +2,15 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 
 from topformguide import models
+from topformguide.repository import make
+from topformguide.repository import model
 from topformguide.util import constants
-from topformguide.util import calculations
 from topformguide.util import string
 from topformguide.util import numbers
+from topformguide.util.model import findRating
 
+makeRepository = make.MakeRepository()
+modelRepository = model.ModelRepository()
 
 def index(request):
     return render(request, 'index.html', None)
@@ -22,7 +26,7 @@ def displayCar(request, variantId):
     # fuelEconomies = sorted(car.fuelEcomonySet, cmp=compareFuelData)
     fuelData = []
     for econ in sorted(car.fuelEconomySet.all(), cmp=compareFuelData):
-        emissionData = calculations.findRating(car.emissionDataSet.all(), econ.type)
+        emissionData = findRating(car.emissionDataSet.all(), econ.type)
         fuelData.append({'econ': econ, 'emissions': emissionData})
 
     return render(request, 'variant.html', {'car': car, 'fuelData': fuelData})
@@ -39,18 +43,24 @@ def topFuelTypes(request):
 
 def showMakes(request, type=None, filter=None):
     path = '/cars'
+    title = 'View Cars by Make'
+    text = 'Select a Make to see all the Models for that Make'
     if type == 'rating':
         path = '/top/make'
+        title = 'View Top 20 Vehicles by Make'
+        text = 'Select a Make to see the Top 20 rating vehicles for that make'
     elif type == 'body':
         path = '/body/' + filter
+        title = 'View ' + string.deslugify(filter) + 's for a Make'
+        text = 'Select a Make to see all the ' + string.deslugify(filter) + 's they produce'
 
-    makes = getMakes(None)
+    makes = makeRepository.findNamesMakesWithRatedCars(filter)
     makeLists = splitIntoLists(makes, 3)
-    return render(request, 'makelist.html', {'lists': makeLists, 'path': path})
+    return render(request, 'makelist.html', {'lists': makeLists, 'path': path, 'title': title, 'text': text})
 
 
 def showModelsForMake(request, make):
-    allModels = getModelNamesByMake(string.deslugify(make))
+    allModels = modelRepository.findModelNamesWithCarsWithRatingsByMake(string.deslugify(make))
     lists = splitIntoLists(allModels, 3)
     return render(request, 'modelsformake.html',
                   {'lists': lists, 'path': '/cars/' + make, 'make': string.deslugify(make)})
@@ -93,7 +103,8 @@ def variantsForMakeAndModel(request, make, model, year=None):
 
 # SEARCH VIEWS
 def search(request):
-    return render(request, 'searchform.html', {'makes': getMakes(), 'bodyTypes': constants.ALL_BODY_TYPES})
+    makes = makeRepository.findNamesMakesWithRatedCars(None)
+    return render(request, 'searchform.html', {'makes': makes, 'bodyTypes': constants.ALL_BODY_TYPES})
 
 
 def searchresults(request):
@@ -108,21 +119,13 @@ def searchresults(request):
     return render(request, 'searchresults.html', {'variants': variants.all()})
 
 # DATABASE QUERIES
-def getMakes(bodyType=None):
-    querySet = models.Make.objects.values_list('name',
-                                               flat=True).distinct()  # .filter(models__variants__eGoRating__isnull=False)
-    if bodyType is not None:
-        querySet = querySet.filter(models__variants__body=bodyType)
-    return querySet.all()
+# def getModelsByMake(make):
+#    return models.CarModel.objects.filter(make__name__iexact=make).order_by('name', 'year').all()
 
 
-def getModelsByMake(make):
-    return models.CarModel.objects.filter(make__name__iexact=make).order_by('name', 'year').all()
-
-
-def getModelNamesByMake(make):
-    return models.CarModel.objects.filter(make__name__iexact=make) \
-        .values_list('name', flat=True).distinct().all()
+# def getModelNamesByMake(make):
+#    return models.CarModel.objects.filter(make__name__iexact=make) \
+#        .values_list('name', flat=True).distinct().all()
 
 
 def getVariants(make=None, model=None, year=None, body=None, engine=None, fuel=None):
@@ -146,7 +149,7 @@ def getVariants(make=None, model=None, year=None, body=None, engine=None, fuel=N
     if fuel is not None:
         query = query.filter(fuelType=fuel)
 
-    return query.order_by('name', '-eGoRating')
+    return query.order_by('model__year', 'model__make__name', 'model__name', 'name', '-eGoRating')
 
 def splitIntoLists(simpleList, howMany):
     lists = []

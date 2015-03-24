@@ -1,0 +1,36 @@
+Error processing variant of Aston Martin V8Processing URL /new-cars/details.aspx?R=706822&Vertical=Car&__Qpb=1&Cr=6&__Ns=p_HasPhotos_Int32%7C1%7C%7Cp_IsSpecialOffer_Int32%7C1%7C%7Cp_Year_String%7C1%7C%7Cp_ReleaseMonth_Int32%7C1%7C%7Cp_Make_String%7C0%7C%7Cp_Family_String%7C0&spotid=398779&__N=2994+3296+4294937167+4294843921&Silo=1304&seot=1&tsrc=sr-landing-search&__Nne=15&trecs=8&__sid=14BE7E7E5EE0&sdmvc=1Traceback (most recent call last):
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 57, in findAllVariantsForModel
+    self.parseCarData(make, model['Text'], urlFragment)
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 75, in parseCarData
+    time.sleep(self.pauseTime)
+KeyboardInterrupt
+-------------------------Error processing variant of Aston Martin V8Processing URL /new-cars/details.aspx?R=706821&Vertical=Car&__Qpb=1&Cr=7&__Ns=p_HasPhotos_Int32%7C1%7C%7Cp_IsSpecialOffer_Int32%7C1%7C%7Cp_Year_String%7C1%7C%7Cp_ReleaseMonth_Int32%7C1%7C%7Cp_Make_String%7C0%7C%7Cp_Family_String%7C0&spotid=398778&__N=2994+3296+4294937167+4294843921&Silo=1304&seot=1&tsrc=sr-landing-search&__Nne=15&trecs=8&__sid=14BE7E7E5EE0&sdmvc=1Traceback (most recent call last):
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 57, in findAllVariantsForModel
+    self.parseCarData(make, model['Text'], urlFragment)
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 75, in parseCarData
+    time.sleep(self.pauseTime)
+KeyboardInterrupt
+-------------------------Traceback (most recent call last):
+  File "tester.py", line 12, in <module>
+    scraper.getCarData()
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 32, in getCarData
+    self.findAllModelsForMake(make)
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 42, in findAllModelsForMake
+    self.findAllVariantsForModel(make['Text'], make['Value'], model)
+  File "/files/dev/projects/topformguide/carscraper/scrapers/carsales.py", line 51, in findAllVariantsForModel
+    response = self.httpClient.request('GET', url)
+  File "/usr/lib/python2.7/dist-packages/urllib3/request.py", line 75, in request
+    **urlopen_kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/request.py", line 88, in request_encode_url
+    return self.urlopen(method, url, **urlopen_kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/poolmanager.py", line 155, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 623, in urlopen
+    release_conn=release_conn, **response_kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 623, in urlopen
+    release_conn=release_conn, **response_kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 623, in urlopen
+    release_conn=release_conn, **response_kw)
+  File "/usr/lib/python2.7/dist-packages/urllib3/connectionpool.py", line 607, in urlopen
+    raise MaxRetryError(self, url, e)
+MaxRetryError: HTTPConnectionPool(host='www.carsales.com.au', port=80): Max retries exceeded with url: /new-cars/results.aspx?tabid=2207633&Vertical=Car&eapi=2&N=2994+3296+4294965875+4294843911&Silo=Spec&Nne=50&tsrc=sr-landing-search&Ns=p_HasPhotos_Int32%7C1%7C%7Cp_IsSpecialOffer_Int32%7C1%7C%7Cp_Year_String%7C1%7C%7Cp_ReleaseMonth_Int32%7C1%7C%7Cp_Make_String%7C0%7C%7Cp_Family_String%7C0 (Caused by <class 'socket.gaierror'>: [Errno -2] Name or service not known)

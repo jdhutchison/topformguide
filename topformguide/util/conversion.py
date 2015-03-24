@@ -40,6 +40,11 @@ def usGallonsToLitres(gallons, precision=2):
 
 
 def litresToCubicCm(litres):
+    """
+    Converts a volume in litres into cubic centimetres.
+    :param litres: [float] the amount to convert.
+    :return: the volume expressed as cubic cenitmetres.
+    """
     return litres * CM3_IN_LITRE;
 
 
@@ -176,6 +181,15 @@ def convertLengthToMillimetres(length, unit, precision=1):
 
 
 def convertDistanceToKilometres(amount, unit, precision=2):
+    """
+    Converts a a distance measured in either kilometres or miles into kilometres. The result
+    can be expressed at any precision needed.
+    :param amount: [float] the distance to convert.
+    :param unit: [string] what the distance is measured in, should be KILOMETRES or MILES
+    :param precision: [integer] How precise the answer should be, as in how many digits to the right
+    of the decimal point. Default is 2.
+    :return: the distance in kilometres, with the requested precision.
+    """
     if amount is None:
         return None
     elif unit == constants.MILES:

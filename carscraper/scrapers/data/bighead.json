@@ -1,0 +1,85 @@
+{
+  "fuelTankUnit": "L",
+  "interiorVolume": null,
+  "volumeUnit": null,
+  "year": 2014,
+  "torque": 230,
+  "height": 1485,
+  "engineCylinders": 4,
+  "enginePower": 118,
+  "kerbWeight": null,
+  "seats": 4,
+  "safetyRatingSource": null,
+  "fuelType": "PETROL",
+  "payload": null,
+  "engineVolumeUnit": "cc",
+  "bootVolume": null,
+  "make": "Abarth",
+  "enginePowerUnit": "kW",
+  "length": 3657,
+  "airbags": 5,
+  "width": 1627,
+  "doors": 2,
+  "timestamp": "2015-03-04 07:52:08",
+  "lengthUnits": "mm",
+  "sourceUrl": "/new-cars/details.aspx?R=706551&Vertical=Car&__Qpb=1&Cr=0&__Ns=p_HasPhotos_Int32%7C1%7C%7Cp_IsSpecialOffer_Int32%7C1%7C%7Cp_Year_String%7C1%7C%7Cp_ReleaseMonth_Int32%7C1%7C%7Cp_Make_String%7C0%7C%7Cp_Family_String%7C0&spotid=399184&__N=2994+3296+4294388545+4294614737&Silo=1304&seot=1&tsrc=sr-landing-search&__Nne=15&trecs=6&__sid=14BE7D87EBC2&sdmvc=1",
+  "bodyType": "CONVERTIBLE",
+  "transmissionSpeeds": 5,
+  "tareWeight": 1102,
+  "topSpeedUnit": null,
+  "variant": "Competizione",
+  "secondsTo": 7.4,
+  "fuelConsumption": [
+    {
+      "type": "EXTRA_URBAN",
+      "unit": "L/100km",
+      "economy": 5.4
+    },
+    {
+      "type": "COMBINED",
+      "unit": "L/100km",
+      "economy": 6.5
+    },
+    {
+      "type": "URBAN",
+      "unit": "L/100km",
+      "economy": 8.4
+    }
+  ],
+  "torqueRpm": 3000,
+  "topSpeed": null,
+  "model": "595",
+  "grossWeight": null,
+  "engineVolume": 1368,
+  "fuelTank": 35,
+  "safetyRating": null,
+  "torqueRpmHigh": null,
+  "country": "AU",
+  "secondsToUnit": "100 kph",
+  "wheelbase": 2300,
+  "weightUnit": "kg",
+  "transmission": "AUTO",
+  "enginePowerRpmHigh": null,
+  "emissions": [
+    {
+      "amount": null,
+      "type": "URBAN",
+      "unit": "g/km",
+      "economy": 195.0
+    },
+    {
+      "amount": null,
+      "type": "EXTRA_URBAN",
+      "unit": "g/km",
+      "economy": 125.0
+    },
+    {
+      "amount": null,
+      "type": "COMBINED",
+      "unit": "g/km",
+      "economy": 151.0
+    }
+  ],
+  "enginePowerRpm": 5500,
+  "engineType": "PISTON"
+}

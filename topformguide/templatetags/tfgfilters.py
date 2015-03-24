@@ -1,5 +1,6 @@
 from django import template
 from django.template.defaultfilters import stringfilter
+from topformguide.util import string
 
 register = template.Library()
 
@@ -7,7 +8,7 @@ register = template.Library()
 @register.filter
 @stringfilter
 def fromenum(value):
-    return value.title().replace('_', ' ')
+    return string.constantToHuman(value)
 
 
 @register.filter

@@ -67,7 +67,8 @@ a                   { color: silver }
 a:hover             { color: white; text-decoration: underline; }
 
 /* Car details list */
-tr.hover			{ background-color: grey; text-decoration: underline; cursor: pointer; }
+tr.hover			{ background-color: rgba(100, 100, 100, 0.7); text-decoration: underline; cursor: pointer; }
+tr.hover > a:hover  { text-decoration: none; }
 td.detailscell		{ width: 40%; }
 td.secondarycell        { width: 50%; font-weight: 300; }
 td.ratingcell		{ color: #33CC33; width: 10% }
