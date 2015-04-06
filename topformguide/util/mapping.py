@@ -5,12 +5,7 @@ from topformguide.util import conversion
 from topformguide.util import constants
 from topformguide.util import calculations
 from topformguide import models
-from util.model import findRating
-
-
-def mapFuelEconomyFromJson(jsonText):
-    data = json.loads(jsonText)
-    return mapFuelEconomy(data)
+from topformguide.util.model import findRating
 
 def mapFuelEconomy(data):
     fuelEcon = models.FuelEconomy()
@@ -115,6 +110,7 @@ def mapVariantFromJson(jsonText):
     # Engine/power
     car.cylinders = data['engineCylinders']
     car.engineType = data['engineType']
+    car.engineVolume = conversion.convertVolumeToCubicCentimetres(data['engineVolume'], data['engineVolumeUnit'])
     car.fuelType = data['fuelType']
     car.fuelRange = conversion.convertDistanceToKilometres(data['fuelRange'], data['fuelRangeUnit'])
     car.fuelTankCapacity = conversion.convertVolumeToLitres(data['fuelTank'], data['fuelTankUnit'])

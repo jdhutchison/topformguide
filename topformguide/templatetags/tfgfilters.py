@@ -1,6 +1,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 from topformguide.util import string
+from topformguide.util import conversion
+from topformguide.util import constants
 
 register = template.Library()
 
@@ -25,3 +27,8 @@ def checkifint(value):
         return int(value)
     else:
         return value
+
+
+@register.filter
+def volumetolitres(value, fromunit=constants.CUBIC_CM, precision=1):
+    return conversion.convertVolumeToLitres(value, fromunit, precision)

@@ -88,7 +88,7 @@ class Variant(models.Model):
 
     # Key details
     model = models.ForeignKey(CarModel, related_name='models')
-    name = models.CharField('The name of the variant - this may be just the year', max_length=64)
+    name = models.CharField('The name of the variant - this may be just the year', max_length=64, null=True)
     year = models.IntegerField('The year of the variant', null=True)
     countries = models.ManyToManyField(Country)
     doors = models.IntegerField('The number of doors')
@@ -102,6 +102,7 @@ class Variant(models.Model):
     engineType = models.CharField('The type of engine', choices=ENGINE_TYPE, max_length=16)
     cylinders = models.IntegerField('How many cylinders for a combustion engine', null=True)
     enginePower = models.FloatField('The engine power in kW', null=True)
+    engineVolume = models.FloatField('The volume of the engine in cubic centimetres', null=True)
     enginePowerRpms = models.IntegerField('At what RPMs the engine produces the power', null=True)
     enginePowerRpmsHigh = models.IntegerField('At what RPMs the engine produces the power', null=True)
 

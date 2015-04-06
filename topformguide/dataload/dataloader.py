@@ -1,3 +1,4 @@
+import os
 import sys
 import traceback
 from datetime import datetime
@@ -10,12 +11,14 @@ from topformguide.repository import country
 
 
 class DataLoader:
-    def __init__(self, failLog=None):
+    def __init__(self, failLog=False):
+        BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
         self.countryRepository = country.CountryRepository()
         self.logFailures = failLog
         if failLog is True:
-            self.failLogFile = open('/files/dev/projects/topformguide/data/reports/failed.json', 'w')
-            self.errorFile = open('/files/dev/projects/topformguide/data/reports/failed-errors.log', 'w')
+            self.failLogFile = open(os.path.join(BASE_DIR, '../data/failed.json'), 'w')
+            self.errorFile = open(os.path.join(BASE_DIR, '../data/failed-errors.log'), 'w')
 
     def __loadRecord(self, json):
         makeName, modelName, year, countryCode, car, rawData = mapping.mapVariantFromJson(json)

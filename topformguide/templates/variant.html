@@ -12,7 +12,7 @@
     <div class="keytext">
         {{ car.doors }} door, {% if car.speeds > 1 %}{{ car.speeds }} speed {% endif %}{{ car.transmission|fromenum }}
         with a
-        {% if car.cylinders > 1 %}{{ car.cylinders }} cylinder, {% endif %}2.0L engine
+        {% if car.cylinders > 1 %}{{ car.cylinders }} cylinder, {% endif %}{{ car.engineVolume|volumetolitres }}L engine
     </div>
     <div class="rating">E-Go Rating: <span class="rating-value">{{ car.eGoRating|roundnum }}</span></div>
 
@@ -54,7 +54,7 @@
                 <span class="value">{{ car.airbags }}</span></td>
             <td class="cardata">
                 <div class="item">Safety Rating</div>
-                <span class="value">{% if car.safetyRating %}{{ car.safetyRating }} (source: {{ car.safetyRatingSource }} {% endif %}</span>
+                <span class="value">{% if car.safetyRating %}{{ car.safetyRating }} (source: {{ car.safetyRatingSource }}) {% endif %}</span>
             </td>
         </tr>
         </tbody>
@@ -91,7 +91,7 @@
         <tr>
             <td class="cardata">
                 <div class="item">Volume</div>
-                <span class="value"></span>
+                <span class="value">{{ car.engineVolume|checkifint }} cc</span>
             </td>
             <td class="cardata">
                 <div class="item">Acceleration (0 - 100kph)</div>

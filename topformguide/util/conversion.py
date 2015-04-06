@@ -78,6 +78,22 @@ def convertVolumeToLitres(amount, unit, precision=2):
         return None
 
 
+def convertVolumeToCubicCentimetres(amount, unit, precision=2):
+    """
+    Converts a measurement of volume of an arbitrary unit into cubic centimetres with an adjustable
+    precision.
+    :param amount: [float] the amount of the volume
+    :param unit: [string] what the volume is measured in. Should be one of 'cc', 'L', 'GALLONS' or 'cu ft'
+    :param precision: [int] how many places to the right of the decinal point to round to. Optional, default is 2
+    :return: [float] the volume converted to cubic centimetres, with the requested precision
+    """
+    if amount is None:
+        return None
+    elif unit == constants.CUBIC_CM:
+        return amount
+    else:
+        return round(litresToCubicCm(convertVolumeToLitres(amount, unit, precision)), precision)
+
 # POWER CONVERSIONS
 def convertHorsepowerToKillowatts(amount, precision=2):
     """
