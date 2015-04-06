@@ -119,7 +119,7 @@ class CarSalesScraper:
         return dataPoints
 
     def processDataPoints(self, car, points):
-        car.variant = self.parseVariantName(points).strip()
+        car.variant = self.parseVariantName(points)
         car.bodyType = self.parseBodyType(points['Body Style'])
         car.doors = int(points['Doors'])
         car.seats = int(points['Seat Capacity'])
@@ -257,7 +257,10 @@ class CarSalesScraper:
 
     def parseVariantName(self, points):
         if points['Series'].startswith('('):
-            return points['Badge']
+            if points['Badge'].startswith('(') is False:
+                return points['Badge']
+            else:
+                return None
         elif points['Badge'].startswith('('):
             return points['Series']
         else:
